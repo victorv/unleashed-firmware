@@ -8,12 +8,12 @@ enum PowerSettingsSubmenuIndex {
     PowerSettingsSubmenuIndexOff,
 };
 
-#define P_AUTO_POWEROFF_DELAY_COUNT 9
+#define P_AUTO_POWEROFF_DELAY_COUNT 8
 const char* const p_auto_poweroff_delay_text[P_AUTO_POWEROFF_DELAY_COUNT] =
-    {"OFF","5 sec" ,"5min", "10min", "15min", "30min", "45min", "60min", "90min"};
+    {"OFF","5min", "10min", "15min", "30min", "45min", "60min", "90min"};
 
 const uint32_t p_auto_poweroff_delay_value[P_AUTO_POWEROFF_DELAY_COUNT] =
-    {0, 5000, 300000, 600000, 900000, 1800000, 2700000, 3600000, 5400000};
+    {0, 300000, 600000, 900000, 1800000, 2700000, 3600000, 5400000};
 
 // change variable_item_list visible text and app_poweroff_delay_time_settings when user change item in variable_item_list
 static void power_settings_scene_start_auto_poweroff_delay_changed(VariableItem* item) {
