@@ -416,16 +416,16 @@ void power_api_set_settings(Power* power, const PowerSettings* settings) {
 //start furi timer for autopoweroff
 static void power_start_auto_poweroff_timer(Power* power) {
     furi_timer_start(
-        power->p_auto_poweroff_timer, furi_ms_to_ticks(power->settings.p_auto_poweroff_delay_ms));
+        power->auto_poweroff_timer, furi_ms_to_ticks(power->settings.auto_poweroff_delay_ms));
 }
 
 //stop furi timer for autopoweroff
 static void power_stop_auto_poweroff_timer(Power* power) {
-    furi_timer_stop(power->p_auto_poweroff_timer);
+    furi_timer_stop(power->auto_poweroff_timer);
 }
 
 static uint32_t power_is_running_auto_poweroff_timer(Power* power) {
-    return furi_timer_is_running(power->p_auto_poweroff_timer);
+    return furi_timer_is_running(power->auto_poweroff_timer);
 }
 
 // start|restart poweroff timer
@@ -440,12 +440,19 @@ static void power_auto_poweroff_callback(const void* value, void* context) {
 static void power_auto_poweroff_timer_callback(void* context) {
     furi_assert(context);
     Power* power = context;
-    power_off(power);
+    //check charging state and dont poweroff if battery not fully charged
+    power_check_charging_state(power);
+    if (power->state == PowerStateCharged) {
+        power_off(power);
+    }
+    else {
+        FURI_LOG_D(TAG, "We dont auto_power_off until battery is charging");
+    }
 }
 
 //start|restart timer and events subscription and callbacks for input events (we restart timer when user press keys)
 static void power_auto_poweroff_arm(Power* power) {
-    if(power->settings.p_auto_poweroff_delay_ms) {
+    if(power->settings.auto_poweroff_delay_ms) {
         if(power->input_events_subscription == NULL) {
             power->input_events_subscription = furi_pubsub_subscribe(
                 power->input_events_pubsub, power_auto_poweroff_callback, power);
@@ -485,7 +492,7 @@ static void power_loader_callback(const void* message, void* context) {
 // apply power settings
 static void power_settings_apply(Power* power) {
     //apply auto_poweroff settings
-    if(power->settings.p_auto_poweroff_delay_ms && !power->app_running) {
+    if(power->settings.auto_poweroff_delay_ms && !power->app_running) {
         return;
         power_auto_poweroff_arm(power);
     } else if (power_is_running_auto_poweroff_timer(power)) {
@@ -615,7 +622,7 @@ static Power* power_alloc(void) {
     furi_pubsub_subscribe(loader_get_pubsub(loader), power_loader_callback, power);
     power->input_events_pubsub = furi_record_open(RECORD_INPUT_EVENTS);
     //define autopoweroff timer and they callback 
-    power->p_auto_poweroff_timer =
+    power->auto_poweroff_timer =
         furi_timer_alloc(power_auto_poweroff_timer_callback, FuriTimerTypeOnce, power);
 
     // Gui

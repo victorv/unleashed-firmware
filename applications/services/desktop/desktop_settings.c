@@ -14,6 +14,7 @@
 
 typedef struct {
     uint32_t auto_lock_delay_ms;
+    uint32_t auto_poweroff_delay_ms;
     uint8_t displayBatteryPercentage;
     uint8_t dummy_mode;
     uint8_t display_clock;
@@ -53,6 +54,7 @@ void desktop_settings_load(DesktopSettings* settings) {
 
             if(success) {
                 settings->auto_lock_delay_ms = settings_v15->auto_lock_delay_ms;
+                settings->usb_inhibit_auto_lock = 0;
                 settings->displayBatteryPercentage = settings_v15->displayBatteryPercentage;
                 settings->dummy_mode = settings_v15->dummy_mode;
                 settings->display_clock = settings_v15->display_clock;

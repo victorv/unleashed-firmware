@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 typedef struct {
-    uint32_t p_auto_poweroff_delay_ms;
+    uint32_t auto_poweroff_delay_ms;
 } PowerSettings;
 
 #ifdef __cplusplus

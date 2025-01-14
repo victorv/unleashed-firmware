@@ -44,7 +44,7 @@ void power_settings_load(PowerSettings* settings) {
                 POWER_SETTINGS_VER_0);
 
             if(success) {
-                settings->p_auto_poweroff_delay_ms = 0;
+                settings->auto_poweroff_delay_ms = 0;
             }
 
             free(settings_v0);

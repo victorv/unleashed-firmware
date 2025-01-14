@@ -8,20 +8,20 @@ enum PowerSettingsSubmenuIndex {
     PowerSettingsSubmenuIndexOff,
 };
 
-#define P_AUTO_POWEROFF_DELAY_COUNT 8
-const char* const p_auto_poweroff_delay_text[P_AUTO_POWEROFF_DELAY_COUNT] =
-    {"OFF","5min", "10min", "15min", "30min", "45min", "60min", "90min"};
+#define AUTO_POWEROFF_DELAY_COUNT 9
+const char* const auto_poweroff_delay_text[AUTO_POWEROFF_DELAY_COUNT] =
+    {"OFF","5 sec","5min", "10min", "15min", "30min", "45min", "60min", "90min"};
 
-const uint32_t p_auto_poweroff_delay_value[P_AUTO_POWEROFF_DELAY_COUNT] =
-    {0, 300000, 600000, 900000, 1800000, 2700000, 3600000, 5400000};
+const uint32_t auto_poweroff_delay_value[AUTO_POWEROFF_DELAY_COUNT] =
+    {0, 5000, 300000, 600000, 900000, 1800000, 2700000, 3600000, 5400000};
 
 // change variable_item_list visible text and app_poweroff_delay_time_settings when user change item in variable_item_list
 static void power_settings_scene_start_auto_poweroff_delay_changed(VariableItem* item) {
     PowerSettingsApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
 
-    variable_item_set_current_value_text(item, p_auto_poweroff_delay_text[index]);
-    app->settings.p_auto_poweroff_delay_ms = p_auto_poweroff_delay_value[index];
+    variable_item_set_current_value_text(item, auto_poweroff_delay_text[index]);
+    app->settings.auto_poweroff_delay_ms = auto_poweroff_delay_value[index];
 }
 
 static void power_settings_scene_start_submenu_callback(void* context, uint32_t index) { //show selected menu screen
@@ -39,16 +39,16 @@ void power_settings_scene_start_on_enter(void* context) {
     item = variable_item_list_add(
         variable_item_list,
         "Auto PowerOff Time",
-        P_AUTO_POWEROFF_DELAY_COUNT,
+        AUTO_POWEROFF_DELAY_COUNT,
         power_settings_scene_start_auto_poweroff_delay_changed, //function for change visible item list value and app settings
         app);
 
     value_index = value_index_uint32(
-        app->settings.p_auto_poweroff_delay_ms,
-        p_auto_poweroff_delay_value,
-        P_AUTO_POWEROFF_DELAY_COUNT);
+        app->settings.auto_poweroff_delay_ms,
+        auto_poweroff_delay_value,
+        AUTO_POWEROFF_DELAY_COUNT);
     variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, p_auto_poweroff_delay_text[value_index]);
+    variable_item_set_current_value_text(item, auto_poweroff_delay_text[value_index]);
 
     variable_item_list_add(variable_item_list, "Battery Info", 1, NULL, NULL);
     variable_item_list_add(variable_item_list, "Reboot", 1, NULL, NULL);

@@ -37,7 +37,7 @@ struct Power {
     uint8_t battery_level;
     uint8_t power_off_timeout;
     PowerSettings settings;
-    FuriTimer* p_auto_poweroff_timer;
+    FuriTimer* auto_poweroff_timer;
     bool app_running;
     FuriPubSub* input_events_pubsub;
     FuriPubSubSubscription* input_events_subscription;
