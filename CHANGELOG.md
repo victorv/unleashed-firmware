@@ -1,14 +1,18 @@
 ## Main changes
-- Current API: 79.2
+- Current API: 79.3
 * SubGHz: Jolly Motors support (with add manually) (Thanks @pkooiman !)
-* Desktop: Auto Power Off Timer (by @Dmitry422 with some fixes by @xMasterX)
+* Power: Auto Power Off Timer (by @Dmitry422 with some fixes by @xMasterX)
 * OFW: **Fix lost BadBLE keystrokes**
 * OFW: **Add the ability to send a signal once via RPC**
 * OFW PR 4025: Increase system stack's reserved memory size (Fix USB UART Bridge Crash) (by @Astrrra)
 * OFW: merged gsurkov/vcp_break_support branch for usb uart bridge (WIP!!!)
 * Apps: **Check out more Apps updates and fixes by following** [this link](https://github.com/xMasterX/all-the-plugins/commits/dev)
 ## Other changes
-* Desktop: Add input events sub check & use event system for auto power off
+* Power & Desktop: Add input events sub check & use event system for auto power off
+* OFW: Rename FuriHalDebuging.md to FuriHalDebugging.md
+* OFW: nfc: Fix MIFARE Plus detection
+* OFW: u2f: Fix leaking message digest contexts
+* OFW: nfc: Fix MFUL PWD_AUTH command creation
 * OFW: Bump cross-spawn in /applications/system/js_app/packages/create-fz-app
 * OFW: **Pipe** (new api funcs)
 * OFW: Fix invalid path errors while deploying SDK by enforcing toolchain to use UTF-8 on initial SDK Extraction
