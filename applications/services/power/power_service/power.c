@@ -440,13 +440,15 @@ static void power_auto_poweroff_callback(const void* value, void* context) {
 static void power_auto_poweroff_timer_callback(void* context) {
     furi_assert(context);
     Power* power = context;
-    //check charging state and dont poweroff if battery not fully charged
-    power_check_charging_state(power);
-    if (power->state == PowerStateCharged) {
+
+    //poweroff if not charging now or if connected to charger and charging done
+    if (((!furi_hal_power_is_charging())) || (furi_hal_power_is_charging_done())) {
         power_off(power);
     }
     else {
+        //else we dont poweroff device and restart timer
         FURI_LOG_D(TAG, "We dont auto_power_off until battery is charging");
+        power_start_auto_poweroff_timer(power);
     }
 }
 
@@ -493,12 +495,10 @@ static void power_loader_callback(const void* message, void* context) {
 static void power_settings_apply(Power* power) {
     //apply auto_poweroff settings
     if(power->settings.auto_poweroff_delay_ms && !power->app_running) {
-        return;
         power_auto_poweroff_arm(power);
     } else if (power_is_running_auto_poweroff_timer(power)) {
         power_auto_poweroff_disarm(power);
     }
-    return;
 }
 
 // do something depend from power queue message
@@ -662,6 +662,10 @@ int32_t power_srv(void* p) {
     }
 
     Power* power = power_alloc();
+
+    // load inital settings for power service
+    power_init_settings(power);
+
     power_update_info(power);
 
     furi_record_create(RECORD_POWER, power);
@@ -670,9 +674,6 @@ int32_t power_srv(void* p) {
     Loader* loader = furi_record_open(RECORD_LOADER);
     power->app_running = loader_is_locked(loader);
     furi_record_close(RECORD_LOADER);
-
-    // load inital settings for power service
-    power_init_settings(power);
 
     furi_event_loop_run(power->event_loop);
 

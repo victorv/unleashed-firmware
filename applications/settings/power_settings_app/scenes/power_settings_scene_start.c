@@ -2,18 +2,18 @@
 #include <lib/toolbox/value_index.h>
 
 enum PowerSettingsSubmenuIndex {
-    PowerSettingsSubmenuIndexAutoPowerOff,
     PowerSettingsSubmenuIndexBatteryInfo,
     PowerSettingsSubmenuIndexReboot,
     PowerSettingsSubmenuIndexOff,
+    PowerSettingsSubmenuIndexAutoPowerOff,
 };
 
-#define AUTO_POWEROFF_DELAY_COUNT 9
+#define AUTO_POWEROFF_DELAY_COUNT 8
 const char* const auto_poweroff_delay_text[AUTO_POWEROFF_DELAY_COUNT] =
-    {"OFF","5 sec","5min", "10min", "15min", "30min", "45min", "60min", "90min"};
+    {"OFF","5min", "10min", "15min", "30min", "45min", "60min", "90min"};
 
 const uint32_t auto_poweroff_delay_value[AUTO_POWEROFF_DELAY_COUNT] =
-    {0, 5000, 300000, 600000, 900000, 1800000, 2700000, 3600000, 5400000};
+    {0, 300000, 600000, 900000, 1800000, 2700000, 3600000, 5400000};
 
 // change variable_item_list visible text and app_poweroff_delay_time_settings when user change item in variable_item_list
 static void power_settings_scene_start_auto_poweroff_delay_changed(VariableItem* item) {
@@ -34,6 +34,10 @@ void power_settings_scene_start_on_enter(void* context) {
     PowerSettingsApp* app = context;
     VariableItemList* variable_item_list = app->variable_item_list;
 
+    variable_item_list_add(variable_item_list, "Battery Info", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "Reboot", 1, NULL, NULL);
+    variable_item_list_add(variable_item_list, "Power OFF", 1, NULL, NULL);
+
     VariableItem* item;
     uint8_t value_index;
     item = variable_item_list_add(
@@ -49,11 +53,7 @@ void power_settings_scene_start_on_enter(void* context) {
         AUTO_POWEROFF_DELAY_COUNT);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, auto_poweroff_delay_text[value_index]);
-
-    variable_item_list_add(variable_item_list, "Battery Info", 1, NULL, NULL);
-    variable_item_list_add(variable_item_list, "Reboot", 1, NULL, NULL);
-    variable_item_list_add(variable_item_list, "Power OFF", 1, NULL, NULL);
-
+    
     variable_item_list_set_selected_item(
         variable_item_list, scene_manager_get_scene_state(app->scene_manager, PowerSettingsAppSceneStart));
     variable_item_list_set_enter_callback( //callback to show next mennu screen
