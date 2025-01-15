@@ -45,10 +45,10 @@ const char* const auto_lock_delay_text[AUTO_LOCK_DELAY_COUNT] = {
 const uint32_t auto_lock_delay_value[AUTO_LOCK_DELAY_COUNT] =
     {0, 10000, 15000, 30000, 60000, 90000, 120000, 300000, 600000};
 
-#define USB_INHIBIT_AUTO_LOCK_DELAY_COUNT   3
-#define USB_INHIBIT_AUTOLOCK_OFF    0
-#define USB_INHIBIT_AUTOLOCK_ON     1
-#define USB_INHIBIT_AUTOLOCK_RPC    2
+#define USB_INHIBIT_AUTO_LOCK_DELAY_COUNT 3
+#define USB_INHIBIT_AUTOLOCK_OFF          0
+#define USB_INHIBIT_AUTOLOCK_ON           1
+#define USB_INHIBIT_AUTOLOCK_RPC          2
 
 const char* const usb_inhibit_auto_lock_delay_text[USB_INHIBIT_AUTO_LOCK_DELAY_COUNT] = {
     "OFF",
@@ -104,7 +104,6 @@ static void desktop_settings_scene_start_clock_enable_changed(VariableItem* item
     app->settings.display_clock = index;
 }
 
-
 static void desktop_settings_scene_start_auto_lock_delay_changed(VariableItem* item) {
     DesktopSettingsApp* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
@@ -151,10 +150,12 @@ void desktop_settings_scene_start_on_enter(void* context) {
         app);
 
     value_index = value_index_uint32(
-        app->settings.usb_inhibit_auto_lock, usb_inhibit_auto_lock_delay_value, USB_INHIBIT_AUTO_LOCK_DELAY_COUNT);
+        app->settings.usb_inhibit_auto_lock,
+        usb_inhibit_auto_lock_delay_value,
+        USB_INHIBIT_AUTO_LOCK_DELAY_COUNT);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, usb_inhibit_auto_lock_delay_text[value_index]);
-    
+
     item = variable_item_list_add(
         variable_item_list,
         "Battery View",

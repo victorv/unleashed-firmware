@@ -13,7 +13,7 @@
 #define POWER_SETTINGS_MAGIC (0x18)
 
 typedef struct {
-//inital set - empty
+    //inital set - empty
 } PowerSettingsV0;
 
 void power_settings_load(PowerSettings* settings) {
@@ -33,7 +33,9 @@ void power_settings_load(PowerSettings* settings) {
                 POWER_SETTINGS_MAGIC,
                 POWER_SETTINGS_VER);
 
-        } else if(version == POWER_SETTINGS_VER_0) { // if config previous version - load it and manual set new settings to inital value
+        } else if(
+            version ==
+            POWER_SETTINGS_VER_0) { // if config previous version - load it and manual set new settings to inital value
             PowerSettingsV0* settings_v0 = malloc(sizeof(PowerSettingsV0));
 
             success = saved_struct_load(

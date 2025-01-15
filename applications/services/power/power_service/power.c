@@ -442,10 +442,9 @@ static void power_auto_poweroff_timer_callback(void* context) {
     Power* power = context;
 
     //poweroff if not charging now or if connected to charger and charging done
-    if (((!furi_hal_power_is_charging())) || (furi_hal_power_is_charging_done())) {
+    if(((!furi_hal_power_is_charging())) || (furi_hal_power_is_charging_done())) {
         power_off(power);
-    }
-    else {
+    } else {
         //else we dont poweroff device and restart timer
         FURI_LOG_D(TAG, "We dont auto_power_off until battery is charging");
         power_start_auto_poweroff_timer(power);
@@ -463,7 +462,7 @@ static void power_auto_poweroff_arm(Power* power) {
     }
 }
 
-// stop timer and event subscription 
+// stop timer and event subscription
 static void power_auto_poweroff_disarm(Power* power) {
     power_stop_auto_poweroff_timer(power);
     if(power->input_events_subscription) {
@@ -482,7 +481,7 @@ static void power_loader_callback(const void* message, void* context) {
     if(event->type == LoaderEventTypeApplicationBeforeLoad) {
         power->app_running = true;
         power_auto_poweroff_disarm(power);
-    // arm timer if some apps was not loaded or was stoped
+        // arm timer if some apps was not loaded or was stoped
     } else if(
         event->type == LoaderEventTypeApplicationLoadFailed ||
         event->type == LoaderEventTypeApplicationStopped) {
@@ -496,7 +495,7 @@ static void power_settings_apply(Power* power) {
     //apply auto_poweroff settings
     if(power->settings.auto_poweroff_delay_ms && !power->app_running) {
         power_auto_poweroff_arm(power);
-    } else if (power_is_running_auto_poweroff_timer(power)) {
+    } else if(power_is_running_auto_poweroff_timer(power)) {
         power_auto_poweroff_disarm(power);
     }
 }
@@ -621,7 +620,7 @@ static Power* power_alloc(void) {
     Loader* loader = furi_record_open(RECORD_LOADER);
     furi_pubsub_subscribe(loader_get_pubsub(loader), power_loader_callback, power);
     power->input_events_pubsub = furi_record_open(RECORD_INPUT_EVENTS);
-    //define autopoweroff timer and they callback 
+    //define autopoweroff timer and they callback
     power->auto_poweroff_timer =
         furi_timer_alloc(power_auto_poweroff_timer_callback, FuriTimerTypeOnce, power);
 
@@ -670,7 +669,7 @@ int32_t power_srv(void* p) {
 
     furi_record_create(RECORD_POWER, power);
 
-// Can't be done in alloc, other things in startup need power service and it would deadlock by waiting for loader
+    // Can't be done in alloc, other things in startup need power service and it would deadlock by waiting for loader
     Loader* loader = furi_record_open(RECORD_LOADER);
     power->app_running = loader_is_locked(loader);
     furi_record_close(RECORD_LOADER);

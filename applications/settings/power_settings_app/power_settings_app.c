@@ -48,7 +48,9 @@ PowerSettingsApp* power_settings_app_alloc(uint32_t first_scene) {
         app->view_dispatcher, PowerSettingsAppViewSubmenu, submenu_get_view(app->submenu));
     app->variable_item_list = variable_item_list_alloc();
     view_dispatcher_add_view(
-        app->view_dispatcher, PowerSettingsAppViewVariableItemList, variable_item_list_get_view(app->variable_item_list));
+        app->view_dispatcher,
+        PowerSettingsAppViewVariableItemList,
+        variable_item_list_get_view(app->variable_item_list));
     app->dialog = dialog_ex_alloc();
     view_dispatcher_add_view(
         app->view_dispatcher, PowerSettingsAppViewDialog, dialog_ex_get_view(app->dialog));
