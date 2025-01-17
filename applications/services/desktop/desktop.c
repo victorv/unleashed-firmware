@@ -17,11 +17,6 @@
 
 #define TAG "Desktop"
 
-// dublicate constants from desktop_setting_scene_start.c
-#define USB_INHIBIT_AUTOLOCK_OFF 0
-#define USB_INHIBIT_AUTOLOCK_ON  1
-#define USB_INHIBIT_AUTOLOCK_RPC 2
-
 static void desktop_auto_lock_arm(Desktop*);
 static void desktop_auto_lock_inhibit(Desktop*);
 static void desktop_start_auto_lock_timer(Desktop*);
@@ -150,15 +145,11 @@ static bool desktop_custom_event_callback(void* context, uint32_t event) {
 
     } else if(event == DesktopGlobalAutoLock) {
         if(!desktop->app_running && !desktop->locked) {
-            // if usb_inhibit_autolock enabled and device charging or device charged but still connected to USB then break desktop locking.
-            if((desktop->settings.usb_inhibit_auto_lock == USB_INHIBIT_AUTOLOCK_ON) &&
-               ((furi_hal_power_is_charging()) || (furi_hal_power_is_charging_done()))) {
+            // Disable AutoLock if usb_inhibit_autolock option enabled and device have active USB session.
+            if((desktop->settings.usb_inhibit_auto_lock) && (furi_hal_usb_is_locked())) {
                 return (0);
             }
-            // if usb_inhibit_autolock set to RPC and we have F0 connected to phone or PC app then break desktop locking.
-            if(desktop->settings.usb_inhibit_auto_lock == USB_INHIBIT_AUTOLOCK_RPC) {
-                return (0);
-            }
+            
             desktop_lock(desktop);
         }
     } else if(event == DesktopGlobalSaveSettings) {

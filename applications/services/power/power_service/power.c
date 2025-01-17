@@ -441,13 +441,12 @@ static void power_auto_poweroff_timer_callback(void* context) {
     furi_assert(context);
     Power* power = context;
 
-    //poweroff if not charging now or if connected to charger and charging done
-    if(((!furi_hal_power_is_charging())) || (furi_hal_power_is_charging_done())) {
-        power_off(power);
-    } else {
-        //else we dont poweroff device and restart timer
+    //Dont poweroff device if charger connected
+    if (furi_hal_power_is_charging()) {
         FURI_LOG_D(TAG, "We dont auto_power_off until battery is charging");
         power_start_auto_poweroff_timer(power);
+    } else {
+        power_off(power);
     }
 }
 
