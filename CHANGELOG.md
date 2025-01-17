@@ -4,6 +4,7 @@
 * Power: Auto Power Off Timer (by @Dmitry422 with some fixes by @xMasterX)
 * OFW: **Fix lost BadBLE keystrokes**
 * OFW: **Add the ability to send a signal once via RPC**
+* OFW PR 4070: Infrared: increase max carrier limit (by @skotopes)
 * OFW PR 4025: Increase system stack's reserved memory size (Fix USB UART Bridge Crash) (by @Astrrra)
 * OFW: merged gsurkov/vcp_break_support branch for usb uart bridge (WIP!!!)
 * Apps: **Check out more Apps updates and fixes by following** [this link](https://github.com/xMasterX/all-the-plugins/commits/dev)
