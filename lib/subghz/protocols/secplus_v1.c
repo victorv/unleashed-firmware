@@ -14,16 +14,16 @@
 #define TAG "SubGhzProtocoSecPlusV1"
 
 #define SECPLUS_V1_BIT_ERR -1 //0b0000
-#define SECPLUS_V1_BIT_0 0 //0b0001
-#define SECPLUS_V1_BIT_1 1 //0b0011
-#define SECPLUS_V1_BIT_2 2 //0b0111
+#define SECPLUS_V1_BIT_0   0 //0b0001
+#define SECPLUS_V1_BIT_1   1 //0b0011
+#define SECPLUS_V1_BIT_2   2 //0b0111
 
-#define SECPLUS_V1_PACKET_1_HEADER 0x00
-#define SECPLUS_V1_PACKET_2_HEADER 0x02
+#define SECPLUS_V1_PACKET_1_HEADER     0x00
+#define SECPLUS_V1_PACKET_2_HEADER     0x02
 #define SECPLUS_V1_PACKET_1_INDEX_BASE 0
 #define SECPLUS_V1_PACKET_2_INDEX_BASE 21
-#define SECPLUS_V1_PACKET_1_ACCEPTED (1 << 0)
-#define SECPLUS_V1_PACKET_2_ACCEPTED (1 << 1)
+#define SECPLUS_V1_PACKET_1_ACCEPTED   (1 << 0)
+#define SECPLUS_V1_PACKET_2_ACCEPTED   (1 << 1)
 
 static const SubGhzBlockConst subghz_protocol_secplus_v1_const = {
     .te_short = 500,
@@ -563,7 +563,7 @@ void subghz_protocol_decoder_secplus_v1_get_string(void* context, FuriString* ou
     furi_string_cat_printf(
         output,
         "%s %db\r\n"
-        "Key:0x%lX%08lX\r\n"
+        "Key:%lX%08lX\r\n"
         "id1:%d id0:%d",
         instance->generic.protocol_name,
         instance->generic.data_count_bit,
@@ -600,7 +600,7 @@ void subghz_protocol_decoder_secplus_v1_get_string(void* context, FuriString* ou
             output,
             "Sn:0x%08lX\r\n"
             "Cnt:0x%03lX "
-            "Sw_id:0x%X\r\n",
+            "SwID:0x%X\r\n",
             instance->generic.serial,
             instance->generic.cnt,
             instance->generic.btn);
@@ -619,7 +619,7 @@ void subghz_protocol_decoder_secplus_v1_get_string(void* context, FuriString* ou
             output,
             "Sn:0x%08lX\r\n"
             "Cnt:0x%03lX "
-            "Sw_id:0x%X\r\n",
+            "SwID:0x%X\r\n",
             instance->generic.serial,
             instance->generic.cnt,
             instance->generic.btn);

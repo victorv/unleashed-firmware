@@ -26,29 +26,34 @@ void subghz_tick_event_callback(void* context) {
     scene_manager_handle_tick_event(subghz->scene_manager);
 }
 
-static void subghz_rpc_command_callback(RpcAppSystemEvent event, void* context) {
+static void subghz_rpc_command_callback(const RpcAppSystemEvent* event, void* context) {
     furi_assert(context);
     SubGhz* subghz = context;
 
     furi_assert(subghz->rpc_ctx);
 
-    if(event == RpcAppEventSessionClose) {
+    if(event->type == RpcAppEventTypeSessionClose) {
         view_dispatcher_send_custom_event(
             subghz->view_dispatcher, SubGhzCustomEventSceneRpcSessionClose);
         rpc_system_app_set_callback(subghz->rpc_ctx, NULL, NULL);
         subghz->rpc_ctx = NULL;
-    } else if(event == RpcAppEventAppExit) {
+    } else if(event->type == RpcAppEventTypeAppExit) {
         view_dispatcher_send_custom_event(subghz->view_dispatcher, SubGhzCustomEventSceneExit);
-    } else if(event == RpcAppEventLoadFile) {
+    } else if(event->type == RpcAppEventTypeLoadFile) {
+        furi_assert(event->data.type == RpcAppSystemEventDataTypeString);
+        furi_string_set(subghz->file_path, event->data.string);
         view_dispatcher_send_custom_event(subghz->view_dispatcher, SubGhzCustomEventSceneRpcLoad);
-    } else if(event == RpcAppEventButtonPress) {
+    } else if(event->type == RpcAppEventTypeButtonPress) {
         view_dispatcher_send_custom_event(
             subghz->view_dispatcher, SubGhzCustomEventSceneRpcButtonPress);
-    } else if(event == RpcAppEventButtonRelease) {
+    } else if(event->type == RpcAppEventTypeButtonRelease) {
         view_dispatcher_send_custom_event(
             subghz->view_dispatcher, SubGhzCustomEventSceneRpcButtonRelease);
+    } else if(event->type == RpcAppEventTypeButtonPressRelease) {
+        view_dispatcher_send_custom_event(
+            subghz->view_dispatcher, SubGhzCustomEventSceneRpcButtonPressRelease);
     } else {
-        rpc_system_app_confirm(subghz->rpc_ctx, event, false);
+        rpc_system_app_confirm(subghz->rpc_ctx, false);
     }
 }
 
@@ -66,10 +71,6 @@ static void subghz_load_custom_presets(SubGhzSetting* setting) {
         // Pagers
         {"Pagers",
          "02 0D 07 04 08 32 0B 06 10 64 11 93 12 0C 13 02 14 00 15 15 18 18 19 16 1B 07 1C 00 1D 91 20 FB 21 56 22 10 00 00 C0 00 00 00 00 00 00 00"},
-
-        // # HND - FM preset
-        {"HND_1",
-         "02 0D 0B 06 08 32 07 04 14 00 13 02 12 04 11 36 10 69 15 32 18 18 19 16 1D 91 1C 00 1B 07 20 FB 22 10 21 56 00 00 C0 00 00 00 00 00 00 00"},
     };
 
     FlipperFormat* fff_temp = flipper_format_string_alloc();
@@ -99,7 +100,6 @@ SubGhz* subghz_alloc(bool alloc_for_tx_only) {
 
     // View Dispatcher
     subghz->view_dispatcher = view_dispatcher_alloc();
-    view_dispatcher_enable_queue(subghz->view_dispatcher);
 
     subghz->scene_manager = scene_manager_alloc(&subghz_scene_handlers, subghz);
     view_dispatcher_set_event_callback_context(subghz->view_dispatcher, subghz);
@@ -200,16 +200,13 @@ SubGhz* subghz_alloc(bool alloc_for_tx_only) {
     subghz->last_settings = subghz_last_settings_alloc();
     size_t preset_count = subghz_setting_get_preset_count(setting);
     subghz_last_settings_load(subghz->last_settings, preset_count);
-#ifdef FURI_DEBUG
-    subghz_last_settings_log(subghz->last_settings);
-#endif
+
+    // Set LED and Amp GPIO control state
+    furi_hal_subghz_set_ext_leds_and_amp(subghz->last_settings->leds_and_amp);
+
     if(!alloc_for_tx_only) {
-#if SUBGHZ_LAST_SETTING_SAVE_PRESET
         subghz_txrx_set_preset_internal(
             subghz->txrx, subghz->last_settings->frequency, subghz->last_settings->preset_index);
-#else
-        subghz_txrx_set_default_preset(subghz->txrx, subghz->last_settings->frequency);
-#endif
         subghz->history = subghz_history_alloc();
     }
 

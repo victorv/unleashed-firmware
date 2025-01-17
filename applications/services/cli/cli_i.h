@@ -28,8 +28,9 @@ struct CliSession {
     void (*init)(void);
     void (*deinit)(void);
     size_t (*rx)(uint8_t* buffer, size_t size, uint32_t timeout);
+    size_t (*rx_stdin)(uint8_t* buffer, size_t size, uint32_t timeout, void* context);
     void (*tx)(const uint8_t* buffer, size_t size);
-    void (*tx_stdout)(const char* data, size_t size);
+    void (*tx_stdout)(const char* data, size_t size, void* context);
     bool (*is_connected)(void);
 };
 
@@ -54,13 +55,20 @@ struct Cli {
     size_t cursor_position;
 };
 
-Cli* cli_alloc();
+Cli* cli_alloc(void);
 
 void cli_reset(Cli* cli);
 
 void cli_putc(Cli* cli, char c);
 
 void cli_stdout_callback(void* _cookie, const char* data, size_t size);
+
+// Wraps CLI commands to load from plugin file
+// Must call from CLI context, like dummy CLI command callback
+// You need to setup the plugin to compile correctly separately
+#define CLI_PLUGIN_APP_ID      "cli"
+#define CLI_PLUGIN_API_VERSION 1
+void cli_plugin_wrapper(const char* name, Cli* cli, FuriString* args, void* context);
 
 #ifdef __cplusplus
 }

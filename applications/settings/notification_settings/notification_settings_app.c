@@ -20,8 +20,11 @@ static const NotificationSequence sequence_note_c = {
     NULL,
 };
 
-#define CONTRAST_COUNT 11
+#define CONTRAST_COUNT 17
 const char* const contrast_text[CONTRAST_COUNT] = {
+    "-8",
+    "-7",
+    "-6",
     "-5",
     "-4",
     "-3",
@@ -33,8 +36,14 @@ const char* const contrast_text[CONTRAST_COUNT] = {
     "+3",
     "+4",
     "+5",
+    "+6",
+    "+7",
+    "+8",
 };
 const int32_t contrast_value[CONTRAST_COUNT] = {
+    -8,
+    -7,
+    -6,
     -5,
     -4,
     -3,
@@ -46,6 +55,9 @@ const int32_t contrast_value[CONTRAST_COUNT] = {
     3,
     4,
     5,
+    6,
+    7,
+    8,
 };
 
 #define BACKLIGHT_COUNT 21
@@ -161,7 +173,7 @@ static uint32_t notification_app_settings_exit(void* context) {
     return VIEW_NONE;
 }
 
-static NotificationAppSettings* alloc_settings() {
+static NotificationAppSettings* alloc_settings(void) {
     NotificationAppSettings* app = malloc(sizeof(NotificationAppSettings));
     app->notification = furi_record_open(RECORD_NOTIFICATION);
     app->gui = furi_record_open(RECORD_GUI);
@@ -230,7 +242,6 @@ static NotificationAppSettings* alloc_settings() {
     }
 
     app->view_dispatcher = view_dispatcher_alloc();
-    view_dispatcher_enable_queue(app->view_dispatcher);
     view_dispatcher_attach_to_gui(app->view_dispatcher, app->gui, ViewDispatcherTypeFullscreen);
     view_dispatcher_add_view(app->view_dispatcher, 0, view);
     view_dispatcher_switch_to_view(app->view_dispatcher, 0);

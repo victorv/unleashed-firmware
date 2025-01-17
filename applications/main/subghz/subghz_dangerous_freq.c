@@ -1,7 +1,7 @@
 #include <furi.h>
 #include <furi_hal.h>
 
-#include <firmware/targets/f7/furi_hal/furi_hal_subghz_i.h>
+#include <targets/f7/furi_hal/furi_hal_subghz_i.h>
 
 #include <flipper_format/flipper_format_i.h>
 
@@ -27,8 +27,8 @@ void subghz_dangerous_freq() {
     SubGhzLastSettings* last_settings = subghz_last_settings_alloc();
     subghz_last_settings_load(last_settings, 0);
 
-    // Set globally in furi hal
-    furi_hal_subghz_set_ext_power_amp(last_settings->external_module_power_amp);
+    // Set LED and Amp GPIO control state
+    furi_hal_subghz_set_ext_leds_and_amp(last_settings->leds_and_amp);
 
     subghz_last_settings_free(last_settings);
 

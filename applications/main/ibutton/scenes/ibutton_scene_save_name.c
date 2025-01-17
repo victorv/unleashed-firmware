@@ -17,7 +17,7 @@ void ibutton_scene_save_name_on_enter(void* context) {
     const bool is_new_file = furi_string_empty(ibutton->file_path);
 
     if(is_new_file) {
-        name_generator_make_auto(
+        name_generator_make_auto_basic(
             ibutton->key_name, IBUTTON_KEY_NAME_SIZE, IBUTTON_APP_FILENAME_PREFIX);
     }
 
@@ -41,9 +41,17 @@ bool ibutton_scene_save_name_on_event(void* context, SceneManagerEvent event) {
     iButton* ibutton = context;
     bool consumed = false;
 
+    const bool is_new_file = furi_string_empty(ibutton->file_path);
+
     if(event.type == SceneManagerEventTypeCustom) {
         consumed = true;
         if(event.event == iButtonCustomEventTextEditResult) {
+            if(!is_new_file) {
+                Storage* storage = furi_record_open(RECORD_STORAGE);
+                storage_simply_remove(storage, furi_string_get_cstr(ibutton->file_path));
+                furi_record_close(RECORD_STORAGE);
+            }
+
             furi_string_printf(
                 ibutton->file_path,
                 "%s/%s%s",

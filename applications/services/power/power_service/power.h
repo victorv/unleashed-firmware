@@ -1,8 +1,9 @@
 #pragma once
 
 #include <stdint.h>
-#include <core/pubsub.h>
 #include <stdbool.h>
+#include <power/power_service/power_settings.h>
+#include <core/pubsub.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,7 +66,7 @@ void power_off(Power* power);
  *
  * @param mode      PowerBootMode
  */
-void power_reboot(PowerBootMode mode);
+void power_reboot(Power* power, PowerBootMode mode);
 
 /** Get power info
  *
@@ -100,6 +101,12 @@ void power_enable_low_battery_level_notification(Power* power, bool enable);
  * @param power     Power instance
  */
 void power_trigger_ui_update(Power* power);
+
+// get settings from service to app
+void power_api_get_settings(Power* instance, PowerSettings* settings);
+
+// set settings from app to service
+void power_api_set_settings(Power* instance, const PowerSettings* settings);
 
 #ifdef __cplusplus
 }

@@ -1,20 +1,21 @@
-#include "../infrared_i.h"
+#include "../infrared_app_i.h"
 
 typedef enum {
     SubmenuIndexUniversalTV,
     SubmenuIndexUniversalAudio,
     SubmenuIndexUniversalProjector,
+    SubmenuIndexUniversalLEDs,
     SubmenuIndexUniversalFan,
     SubmenuIndexUniversalAirConditioner,
 } SubmenuIndex;
 
 static void infrared_scene_universal_submenu_callback(void* context, uint32_t index) {
-    Infrared* infrared = context;
+    InfraredApp* infrared = context;
     view_dispatcher_send_custom_event(infrared->view_dispatcher, index);
 }
 
 void infrared_scene_universal_on_enter(void* context) {
-    Infrared* infrared = context;
+    InfraredApp* infrared = context;
     Submenu* submenu = infrared->submenu;
 
     submenu_add_item(
@@ -40,6 +41,13 @@ void infrared_scene_universal_on_enter(void* context) {
 
     submenu_add_item(
         submenu,
+        "LEDs",
+        SubmenuIndexUniversalLEDs,
+        infrared_scene_universal_submenu_callback,
+        context);
+
+    submenu_add_item(
+        submenu,
         "Fans",
         SubmenuIndexUniversalFan,
         infrared_scene_universal_submenu_callback,
@@ -59,7 +67,7 @@ void infrared_scene_universal_on_enter(void* context) {
 }
 
 bool infrared_scene_universal_on_event(void* context, SceneManagerEvent event) {
-    Infrared* infrared = context;
+    InfraredApp* infrared = context;
     SceneManager* scene_manager = infrared->scene_manager;
     bool consumed = false;
 
@@ -72,6 +80,9 @@ bool infrared_scene_universal_on_event(void* context, SceneManagerEvent event) {
             consumed = true;
         } else if(event.event == SubmenuIndexUniversalProjector) {
             scene_manager_next_scene(scene_manager, InfraredSceneUniversalProjector);
+            consumed = true;
+        } else if(event.event == SubmenuIndexUniversalLEDs) {
+            scene_manager_next_scene(scene_manager, InfraredSceneUniversalLEDs);
             consumed = true;
         } else if(event.event == SubmenuIndexUniversalFan) {
             scene_manager_next_scene(scene_manager, InfraredSceneUniversalFan);
@@ -87,6 +98,6 @@ bool infrared_scene_universal_on_event(void* context, SceneManagerEvent event) {
 }
 
 void infrared_scene_universal_on_exit(void* context) {
-    Infrared* infrared = context;
+    InfraredApp* infrared = context;
     submenu_reset(infrared->submenu);
 }

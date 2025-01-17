@@ -24,7 +24,7 @@ typedef enum {
  * 
  * @return SubGhzTxRx* pointer to SubGhzTxRx
  */
-SubGhzTxRx* subghz_txrx_alloc();
+SubGhzTxRx* subghz_txrx_alloc(void);
 
 /**
  * Free SubGhzTxRx
@@ -121,8 +121,9 @@ void subghz_txrx_sleep(SubGhzTxRx* instance);
  * Update frequency CC1101 in automatic mode (hopper)
  * 
  * @param instance Pointer to a SubGhzTxRx
+ * @param stay_threshold RSSI theshold over which to stay before hopping
  */
-void subghz_txrx_hopper_update(SubGhzTxRx* instance);
+void subghz_txrx_hopper_update(SubGhzTxRx* instance, float stay_threshold);
 
 /**
  * Get state hopper
