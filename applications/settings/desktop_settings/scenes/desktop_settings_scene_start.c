@@ -45,22 +45,14 @@ const char* const auto_lock_delay_text[AUTO_LOCK_DELAY_COUNT] = {
 const uint32_t auto_lock_delay_value[AUTO_LOCK_DELAY_COUNT] =
     {0, 10000, 15000, 30000, 60000, 90000, 120000, 300000, 600000};
 
-#define USB_INHIBIT_AUTO_LOCK_DELAY_COUNT 3
-#define USB_INHIBIT_AUTOLOCK_OFF          0
-#define USB_INHIBIT_AUTOLOCK_ON           1
-#define USB_INHIBIT_AUTOLOCK_RPC          2
+#define USB_INHIBIT_AUTO_LOCK_DELAY_COUNT 2
 
 const char* const usb_inhibit_auto_lock_delay_text[USB_INHIBIT_AUTO_LOCK_DELAY_COUNT] = {
     "OFF",
     "ON",
-    "RPC",
 };
 
-const uint32_t usb_inhibit_auto_lock_delay_value[USB_INHIBIT_AUTO_LOCK_DELAY_COUNT] = {
-    USB_INHIBIT_AUTOLOCK_OFF,
-    USB_INHIBIT_AUTOLOCK_ON,
-    USB_INHIBIT_AUTOLOCK_RPC,
-};
+const uint32_t usb_inhibit_auto_lock_delay_value[USB_INHIBIT_AUTO_LOCK_DELAY_COUNT] = {0,1};
 
 #define CLOCK_ENABLE_COUNT 2
 const char* const clock_enable_text[CLOCK_ENABLE_COUNT] = {
@@ -144,7 +136,7 @@ void desktop_settings_scene_start_on_enter(void* context) {
     // USB connection Inhibit autolock OFF|ON|with opened RPC session
     item = variable_item_list_add(
         variable_item_list,
-        "USB disarm Auto Lock",
+        "Auto Lock disarm by active USB connection",
         USB_INHIBIT_AUTO_LOCK_DELAY_COUNT,
         desktop_settings_scene_start_usb_inhibit_auto_lock_delay_changed,
         app);
